@@ -5,10 +5,13 @@ import json
 import pprint
 import os
 
+BINARYNAME_MAX_LENGTH = 40
+
 class PluginChecksec:
     
     def __init__(self):
         self.desc = "analyze security mitigations"
+        self.r2 = None    
 
 
     def run(self, binaries):
@@ -26,7 +29,7 @@ class PluginChecksec:
     def analyze(self, binary):
         binary_name = os.path.basename(binary['core']['file'])
         output = "%s | %s | %s" %(
-            binary_name.ljust(20),
+            binary_name.ljust(BINARYNAME_MAX_LENGTH),
             str(binary["bin"]["nx"]).ljust(10),
             str(binary["bin"]["canary"]).ljust(10)
             )
@@ -35,7 +38,7 @@ class PluginChecksec:
 
     def print_header(self):
         header = "%s | %s | %s" %(
-            "FILENAME".ljust(20),
+            "FILENAME".ljust(BINARYNAME_MAX_LENGTH),
             "NX".ljust(10),
             "CANARY".ljust(10)
             )
@@ -44,6 +47,6 @@ class PluginChecksec:
 
 
     def get_basic_info(self, full_binary_name):
-        r2 = r2pipe.open(full_binary_name)
-        return json.loads(r2.cmd("ij"))
+        self.r2 = r2pipe.open(full_binary_name)
+        return json.loads(self.r2.cmd("ij"))
  

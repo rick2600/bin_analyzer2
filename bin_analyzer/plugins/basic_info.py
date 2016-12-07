@@ -5,10 +5,13 @@ import json
 import pprint
 import os
 
+BINARYNAME_MAX_LENGTH = 40
+
 class PluginInfo:
     
     def __init__(self):
         self.desc = "show basic informations about the binaries"
+        self.r2 = None       
 
 
     def run(self, binaries):
@@ -26,7 +29,7 @@ class PluginInfo:
     def analyze(self, binary):
         binary_name = os.path.basename(binary['core']['file'])
         output = "%s | %s | %s | %s" %(
-            binary_name.ljust(20),
+            binary_name.ljust(BINARYNAME_MAX_LENGTH),
             binary["bin"]["class"].ljust(10),
             binary["bin"]["os"].ljust(10),
             binary["core"]["type"].ljust(10)
@@ -36,7 +39,7 @@ class PluginInfo:
 
     def print_header(self):
         header = "%s | %s | %s | %s" %(
-            "FILENAME".ljust(20),
+            "FILENAME".ljust(BINARYNAME_MAX_LENGTH),
             "CLASS".ljust(10),
             "OS".ljust(10),
             "TYPE".ljust(10)
@@ -46,5 +49,5 @@ class PluginInfo:
 
 
     def get_basic_info(self, full_binary_name):
-        r2 = r2pipe.open(full_binary_name)
-        return json.loads(r2.cmd("ij"))
+        self.r2 = r2pipe.open(full_binary_name)
+        return json.loads(self.r2.cmd("ij"))
