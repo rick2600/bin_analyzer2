@@ -28,19 +28,22 @@ class PluginChecksec:
 
     def analyze(self, binary):
         binary_name = os.path.basename(binary['core']['file'])
-        output = "%s | %s | %s" %(
+        output = "%s | %s | %s | %s" %(
             binary_name.ljust(BINARYNAME_MAX_LENGTH),
             str(binary["bin"]["nx"]).ljust(10),
-            str(binary["bin"]["canary"]).ljust(10)
+            str(binary["bin"]["canary"]).ljust(10),
+            str(binary["bin"]["pic"]).ljust(10)
+
             )
         print(output)
 
 
     def print_header(self):
-        header = "%s | %s | %s" %(
+        header = "%s | %s | %s | %s" %(
             "FILENAME".ljust(BINARYNAME_MAX_LENGTH),
             "NX".ljust(10),
-            "CANARY".ljust(10)
+            "CANARY".ljust(10),
+            "PIC".ljust(10)            
             )
         print(header)
         print("="*100)        

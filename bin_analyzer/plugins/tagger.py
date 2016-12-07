@@ -43,25 +43,43 @@ class PluginTagger:
             return self.tag_binary_using_imports_PE()
 
     def tag_binary_using_imports_ELF(self):
-        net_funcs = ["socket", "getaddrinfo", "recv", "recvmsg", "recvfrom", "gethostbyname"]
         exec_funcs = ["system", "popen","execl", "execlp", "execle","execv","execvp","execvp", "execve"]
         rand_funcs = ["srand", "rand"]
         heap_funcs = ["malloc", "calloc", "realloc"]
+        net_funcs = ["socket", "getaddrinfo", "recv", "recvmsg", "recvfrom", "gethostbyname"]        
+        net_server_funcs = ["accept", "listen"]
+        net_client_funcs = ["connect"]
+        thread_funcs = ["pthread_create"]
 
         tags = sets.Set()
         for imp in json.loads(self.r2.cmd("iij")):
-            if imp['type'] == 'FUNC' and imp['name'] in net_funcs:
-                tags.add('net')
             if imp['type'] == 'FUNC' and imp['name'] in exec_funcs:
+                exec_funcs.remove(imp['name'])
                 tags.add('exec')
             if imp['type'] == 'FUNC' and imp['name'] in rand_funcs:
+                rand_funcs.remove(imp['name'])
                 tags.add('rand')
             if imp['type'] == 'FUNC' and imp['name'] in heap_funcs:
-                tags.add('heap')                               
+                heap_funcs.remove(imp['name'])
+                tags.add('heap')
+            if imp['type'] == 'FUNC' and imp['name'] in net_server_funcs:
+                net_server_funcs.remove(imp['name'])
+                tags.add('net server')
+            if imp['type'] == 'FUNC' and imp['name'] in net_funcs:
+                net_funcs.remove(imp['name'])
+                tags.add('net')
+            if imp['type'] == 'FUNC' and imp['name'] in net_client_funcs:
+                net_client_funcs.remove(imp['name'])
+                tags.add('net client')
+            if imp['type'] == 'FUNC' and imp['name'] in thread_funcs:
+                thread_funcs.remove(imp['name'])
+                tags.add('thread')
 
         return list(tags)
 
     def tag_binary_using_imports_PE(self):
+        for imp in json.loads(self.r2.cmd("iij")):
+            print imp        
         return []        
 
 
